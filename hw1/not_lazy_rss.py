@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 #подготовка данных
 def prepare_data():
-    data = pd.read_csv('student_exam_data.csv', delimiter=',')
+    data = pd.read_csv('dataset/student_exam_data.csv', delimiter=',')
     # убираем лишние данные
     data = data.transpose()[0:2].transpose()
     # перемешиваем данные

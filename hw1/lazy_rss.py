@@ -27,7 +27,7 @@ def plot_regression_line(x, y, b):
     plt.ylabel('y')
     plt.show()
 
-a = np.genfromtxt("student_exam_data.csv", delimiter=",")
+a = np.genfromtxt("dataset/student_exam_data.csv", delimiter=",")
 x = ret_col(a, 1)
 y = ret_col(a, 0)
 ind = [i for i in range(1, len(x))]

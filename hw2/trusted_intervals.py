@@ -70,8 +70,11 @@ def trusted_intervals(dataframe, name_col_x, name_col_y, alpha):
     sqb0 = sq_b_0(dataframe, name_col_x, name_col_y)
     sqb1 = sq_b_1(dataframe, name_col_x, name_col_y)
     return [[b_0 - q * sqb0 ** (1/2), b_0 + q * sqb0 ** (1/2)],[b_1 - q * sqb0 ** (1/2), b_1 + q * sqb0 ** (1/2)]]
-    
-
+def is_valuable(dataframe, name_col_x, name_col_y, alpha):
+    tins = trusted_intervals(dataframe, name_col_x, name_col_y, alpha)
+    fl1 = False if tins[0][0] < 0 and tins[0][1] > 0 else True
+    fl2 = False if tins[1][0] < 0 and tins[1][1] > 0 else True
+    return fl1, fl2
 
 
 data = prepare_data()
@@ -82,6 +85,9 @@ print("b_0 =",koefs[0])
 print("b_1 =",koefs[1])
 ans =trusted_intervals(data, "Previous Exam Score","Study Hours", 0.05)
 print(f"b_0 lies from {ans[0][0]} to {ans[0][1]}")
+sig0, sig1 = is_valuable(data, "Previous Exam Score","Study Hours", 0.05)
+print("b_0 is significant" if sig0 else "b_0 is insignificant")
 print(f"b_1 lies from {ans[1][0]} to {ans[1][1]}")
+print("b_1 is significant" if sig1 else "b_1 is insignificant")
 #plot_regression_line(data["Previous Exam Score"], data["Study Hours"], ans)
 

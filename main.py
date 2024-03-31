@@ -57,12 +57,14 @@ class pair_reg:
         return fl1, fl2
     def intervals_plot(self, alpha):
         plt.figure(figsize=(10,5), dpi=200)
+        plt.xlabel('Previous exam score', fontsize=10)
+        plt.ylabel('Study hours', fontsize=10)
         plt.scatter(self.X, self.Y, label='Исходные данные')
         plt.plot(self.X, [self.b_1*x + self.b_0 for x in self.X], color='red', label='Линия регрессии')
         b0_int, b1_int = self.trusted_intervals(alpha)
         plt.fill_between(sorted(self.X), [x * b1_int[0] + b0_int[0] for x in sorted(self.X)], [x * b1_int[1] + b0_int[1] for x in sorted(self.X)], color='green', alpha=0.3, label='Доверительные интервалы')
         plt.title('График парной линейной регрессии с доверительными интервалами')
-        plt.savefig('plot.png')
+        #plt.savefig('plot.png')
         plt.show()
         return
 # Возможно имеет смысл сделать ленивый подсчет всех полей класса
@@ -91,19 +93,18 @@ def plot_regression_line(x, y, b, ):
     plt.ylabel('y')
     plt.show()
 
-alpha = 0.5
+alpha = 0.05
 data = prepare_data()
 print(data)
 rg = pair_reg(data)
 print("b_0 =",rg.b_0)
 print("b_1 =",rg.b_1)
 tX, tY = rg.trusted_intervals(alpha)
-
-print("ttt", rg.t_quant(10, alpha))
 print(f"b_0 lies from {tX[0]} to {tX[1]}")
 sig0, sig1 = rg.is_valuable(alpha)
-print("b_0 is significant" if sig0 else "b_0 is insignificant")
+print(f"b_0 is significant with alpha = {alpha}" if sig0 else f"b_0 is insignificant with alpha = {alpha}")
 print(f"b_1 lies from {tY[0]} to {tY[1]}")
-print("b_1 is significant" if sig1 else "b_1 is insignificant")
+print(f"b_1 is significant with alpha = {alpha}" if sig1 else f"b_1 is insignificant with alpha = {alpha}")
 rg.intervals_plot(alpha)
+# старый вывод графика
 #plot_regression_line(rg.X, rg.Y, [rg.b_0, rg.b_1])

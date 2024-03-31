@@ -1,8 +1,12 @@
-# импорт библиотек
+# pandas и numpy
 import pandas as pd
-import matplotlib.pyplot as plt
+import numpy as np
 # для нахождения квантилей распределения Стьюдента
 import scipy
+# визуализация
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 
 # класс, содержащий датасет и методы для работы с парной линейной регрессией
 class pair_reg:
@@ -20,9 +24,19 @@ class pair_reg:
         return scipy.stats.t.ppf((1 + alpha)/2, n)
 
     def __init__(self, data):
-        assert(len(data.transpose()) == 2) # проверка на то, что датасете 2 столбца
+        try:
+            assert(len(data.transpose()) == 2) # проверка на то, что датасете 2 столбца
+        except:
+            print("Датасет имеет число столбцов, отличное от 2")
+            print("Невозможно продолжить выполнение программы")
+            exit(1)
         self.X, self.Y = data.iloc[:, 0], data.iloc[:, 1]
-        assert(len(self.X) == len(self.Y)) # проверка на равенство длины массивов, потом нужно будет сделать обработчик исключений
+        try:
+            assert(len(self.X) == len(self.Y)) # проверка на равенство длины массивов, потом нужно будет сделать обработчик исключений
+        except:
+            print("Столбцы X и Y не равны по длине")
+            print("Невозможно продолжить выполнение программы")
+            exit(1)
         self.X_mean, self.Y_mean = self.X.mean(), self.Y.mean()
         self.Xsq_mean = self.double_mean(self.X, self.X) 
         self.Ysq_mean = self.double_mean(self.Y, self.Y)
@@ -41,6 +55,16 @@ class pair_reg:
         fl1 = False if tinX[0] < 0 and tinX[1] > 0 else True
         fl2 = False if tinY[0] < 0 and tinY[1] > 0 else True
         return fl1, fl2
+    def intervals_plot(self, alpha):
+        plt.figure(figsize=(10,5), dpi=200)
+        plt.scatter(self.X, self.Y, label='Исходные данные')
+        plt.plot(self.X, [self.b_1*x + self.b_0 for x in self.X], color='red', label='Линия регрессии')
+        b0_int, b1_int = self.trusted_intervals(alpha)
+        plt.fill_between(sorted(self.X), [x * b1_int[0] + b0_int[0] for x in sorted(self.X)], [x * b1_int[1] + b0_int[1] for x in sorted(self.X)], color='green', alpha=0.3, label='Доверительные интервалы')
+        plt.title('График парной линейной регрессии с доверительными интервалами')
+        plt.savefig('plot.png')
+        plt.show()
+        return
 # Возможно имеет смысл сделать ленивый подсчет всех полей класса
 
 #подготовка данных
@@ -58,7 +82,7 @@ def prepare_data():
     return data
 
 # строим и выводим график
-def plot_regression_line(x, y, b):
+def plot_regression_line(x, y, b, ):
     plt.scatter(x, y, color = "m",
     marker = "o", s = 30)
     y_pred = b[0] + b[1]*x
@@ -67,17 +91,19 @@ def plot_regression_line(x, y, b):
     plt.ylabel('y')
     plt.show()
 
-
+alpha = 0.5
 data = prepare_data()
 print(data)
 rg = pair_reg(data)
 print("b_0 =",rg.b_0)
 print("b_1 =",rg.b_1)
-tX, tY = rg.trusted_intervals(0.05)
+tX, tY = rg.trusted_intervals(alpha)
 
+print("ttt", rg.t_quant(10, alpha))
 print(f"b_0 lies from {tX[0]} to {tX[1]}")
-sig0, sig1 = rg.is_valuable(0.05)
+sig0, sig1 = rg.is_valuable(alpha)
 print("b_0 is significant" if sig0 else "b_0 is insignificant")
 print(f"b_1 lies from {tY[0]} to {tY[1]}")
 print("b_1 is significant" if sig1 else "b_1 is insignificant")
-plot_regression_line(rg.X, rg.Y, [rg.b_0, rg.b_1])
+rg.intervals_plot(alpha)
+#plot_regression_line(rg.X, rg.Y, [rg.b_0, rg.b_1])

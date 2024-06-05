@@ -6,17 +6,9 @@ import scipy
 # визуализация
 import matplotlib.pyplot as plt
 import seaborn as sns
-# pandas и numpy
-import pandas as pd
-import numpy as np
-# для нахождения квантилей распределения Стьюдента
-import scipy
-# визуализация
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 #подготовка данных
-def prepare_data():
+def prepare_data_for_student_exam():
     data = pd.read_csv('dataset/student_exam_data.csv', delimiter=',')
     # убираем лишние данные
     data = data.transpose()[0:2].transpose()
@@ -38,3 +30,6 @@ def plot_regression_line(x, y, b, ):
     plt.xlabel('x')
     plt.ylabel('y')
     plt.show()
+
+def t_quant(n, alpha):
+        return scipy.stats.t.ppf((1 + alpha)/2, n)

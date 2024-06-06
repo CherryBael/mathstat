@@ -20,7 +20,19 @@ def prepare_data_for_student_exam():
     data.iloc[:, [0,1]] = data.iloc[:, [1, 0]]
     data.columns = [data.columns[1], data.columns[0]]
     return data
-
+def prepare_data_for_heart_failure():
+    data = pd.read_csv('dataset/heart_failure_clinical_records.csv', delimiter=',')
+    # перемешиваем данные
+    data = data.sample(frac=1).reset_index(drop=True)
+    # отрезаем 2000 строк -- нашу выборку
+    data = data[0:2000]
+    tmpX = data.drop(columns = ["ejection_fraction"])
+    X = tmpX.values
+    Xnames = tmpX.columns
+    tmpY = data["ejection_fraction"]
+    Y = tmpY.values
+    Yname = tmpY.name
+    return X, Y, Xnames, Yname
 # строим и выводим график
 def plot_regression_line(x, y, b, ):
     plt.scatter(x, y, color = "m",
@@ -33,3 +45,5 @@ def plot_regression_line(x, y, b, ):
 
 def t_quant(n, alpha):
         return scipy.stats.t.ppf((1 + alpha)/2, n)
+def f_critical_value(n, m, alpha):
+    return scipy.stats.f.ppf(1 - alpha, n, m)

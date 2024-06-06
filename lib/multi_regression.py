@@ -5,6 +5,14 @@ import numpy as np
 from lib.utils import f_critical_value as fcv, t_quant
 # считаем коэффициенты линейной регрессии
 class multi_regression:
+    class cache:
+        Cor_Var = None
+        Cov = None
+        SE = None
+        TSS = None
+        ESS = None
+        RSS = None
+        R = None
     def __init__(self, X, Y):
         try:
             assert(len(X) == len(Y)) # проверка на равенство длины массивов, потом нужно будет сделать обработчик исключений
@@ -15,18 +23,53 @@ class multi_regression:
         self.X = X
         self.Y = Y
         self.regression_coefs()       # создает поле rgc -- коэфициенты линейной регрессии
-        self.df = len(self.Y) - len(self.X[0]) - 1                               # количество степеней свободы
+        self.df = len(self.Y) - len(self.X[0]) - 1  # количество степеней свободы
         self.Y_pr = np.dot(self.X, self.rgc)
         self.Y_mn = self.Y.mean()
         self.e = self.Y - self.Y_pr
-        self.Cor_Var = np.dot(np.transpose(self.e),self.e)/self.df #исправленная дисперсия
-        self.Cov = self.Cor_Var * np.linalg.pinv(np.dot(np.transpose(X),X)) # матрица ковариации
-        self.SE = [self.Cov[i][i] for i in range(len(self.Cov))]
-        self.TSS = sum([(y_i - self.Y_mn)**2 for y_i in self.Y])
-        self.ESS = sum([(y_i - self.Y_mn)**2 for y_i in self.Y_pr])
-        self.R = self.ESS/self.TSS
-        self.RSS = sum([(self.Y[i] - self.Y_pr[i])**2 for i in range(len(self.Y))])
-    
+    @property
+    def Cor_Var(self):
+        if self.cache.Cor_Var is None: 
+            self.cache.Cor_Var = np.dot(np.transpose(self.e),self.e)/self.df
+        return self.cache.Cor_Var
+    @property
+    def Cov(self):
+        if self.cache.Cov is None:
+            self.cache.Cov = self.Cor_Var * np.linalg.pinv(np.dot(np.transpose(self.X),self.X))
+        return self.cache.Cov
+    @property
+    def SE(self):
+        if self.cache.SE is None:
+            self.cache.SE = [self.Cov[i][i] for i in range(len(self.Cov))]
+        return self.cache.SE
+    @property
+    def TSS(self):
+        if self.cache.TSS is None:
+            self.cache.TSS = sum([(y_i - self.Y_mn)**2 for y_i in self.Y])
+        return self.cache.TSS
+    @property
+    def ESS(self):
+        if self.cache.ESS is None:
+            self.cache.ESS = sum([(y_i - self.Y_mn)**2 for y_i in self.Y_pr])
+        return self.cache.ESS
+    @property
+    def RSS(self):
+        if self.cache.RSS is None:
+            self.cache.RSS = sum([(self.Y[i] - self.Y_pr[i])**2 for i in range(len(self.Y))])
+        return self.cache.RSS
+    @property
+    def R(self):
+        if self.cache.R is None:
+            self.cache.R = self.ESS/self.TSS
+        return self.cache.R
+
+
+
+
+
+
+
+
     def regression_coefs(self):
         xtx = np.dot(np.transpose(self.X),self.X)
         xty = np.dot(np.transpose(self.X),self.Y)

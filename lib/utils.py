@@ -43,6 +43,10 @@ def plot_regression_line(x, y, b, ):
     plt.ylabel('y')
     plt.show()
 
+def is_ortogonal(A,B):
+    ans = np.dot(np.transpose(A), B)
+    zz = np.zeros((len(np.transpose(A)), len(np.transpose(B))))
+    return np.array_equal(ans, zz)
 def t_quant(n, alpha):
         return scipy.stats.t.ppf((1 + alpha)/2, n)
 def f_critical_value(n, m, alpha):

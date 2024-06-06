@@ -25,7 +25,7 @@ class pair_reg:
         try:
             assert(len(data.transpose()) == 2) # проверка на то, что датасете 2 столбца
         except:
-            print("Датасет имеет число столбцов, отличное от 2")
+            print("Датасет имеет число столбцов, отличное от 2, воспользуйтесь функцией multi_regression()")
             print("Невозможно продолжить выполнение программы")
             exit(1)
         self.X, self.Y = data.iloc[:, 0], data.iloc[:, 1]

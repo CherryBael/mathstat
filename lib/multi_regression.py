@@ -74,7 +74,8 @@ class multi_regression:
     def regression_coefs(self):
         xtx = np.dot(np.transpose(self.X),self.X)
         xty = np.dot(np.transpose(self.X),self.Y)
-        coefs = np.linalg.solve(xtx, xty)
+        #coefs = np.linalg.solve(xtx, xty)
+        coefs = np.dot(np.linalg.pinv(xtx),xty)
         self.rgc = coefs
         return
     # нахождение доверительных интервалов

@@ -24,7 +24,7 @@ class multi_regression:
         self.X = X
         self.Y = Y
         self.regression_coefs()                     # создает поле rgc -- коэффициенты линейной регрессии
-        self.df = len(self.Y) - len(self.X[0]) - 1  # количество степеней свободы
+        self.df = len(self.Y) - len(self.X[0])  # количество степеней свободы
         self.Y_pr = np.dot(self.X, self.rgc)        # Y, полученные из модели
         self.Y_mn = self.Y.mean()                   # Y среднее
         self.e = self.Y - self.Y_pr                 # вектор ошибок
@@ -32,7 +32,7 @@ class multi_regression:
     @property
     def Cor_Var(self):
         if self.cache.Cor_Var is None: 
-            self.cache.Cor_Var = np.dot(np.transpose(self.e),self.e)/self.df
+            self.cache.Cor_Var = np.dot(np.transpose(self.e),self.e)/(self.df)
         return self.cache.Cor_Var
     # нахождение матрицы ковариации
     @property
@@ -44,7 +44,7 @@ class multi_regression:
     @property
     def SE(self):
         if self.cache.SE is None:
-            self.cache.SE = [self.Cov[i][i] for i in range(len(self.Cov))]
+            self.cache.SE = [self.Cov[i][i]**(1/2) for i in range(len(self.Cov))]
         return self.cache.SE
     # нахождение TSS
     @property
@@ -82,7 +82,7 @@ class multi_regression:
         return(self.rgc[i] - self.SE[i] * t_quant(self.df, alpha), self.rgc[i] + self.SE[i] * t_quant(self.df, alpha))
     # F тест на значимость
     def F_test_for_significance(self, alpha):
-        F = (self.R**2/(len(self.X[0]) - 1))/((1 - self.R**2)/(self.df + 1))
+        F = (self.R**2/(len(self.X[0]) - 1))/((1 - self.R**2)/(self.df))
         #print("------------------------------------------")
         #print(F)
         #print(fcv(len(self.X[0]) - 1, self.df + 1, alpha))

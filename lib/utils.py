@@ -51,3 +51,6 @@ def t_quant(n, alpha):
         return scipy.stats.t.ppf((1 + alpha)/2, n)
 def f_critical_value(n, m, alpha):
     return scipy.stats.f.ppf(1 - alpha, n, m)
+
+
+

@@ -1,5 +1,6 @@
 from lib.multi_regression import multi_regression
-from lib.utils import prepare_data_for_heart_failure, is_ortogonal as iso
+from lib.utils import prepare_data_for_heart_failure, is_ortogonal as iso, t_quant
+
 def multi_regression_homework():
     #X = np.array([[1,2,-1,3], [-1,1,0,0], [0,2,1,0], [0,0,1,-1],[1,-1,2,1]])
     #Y = np.transpose(np.array([1,2,3,4,5]))
@@ -14,3 +15,4 @@ def multi_regression_homework():
         print(f"Принадлежит интервалу [{tleft},{tright}] с точностью {(1 - beta) * 100}%")
     print(f"Модель проходит F-тест на значимость с точностью {(1 - alpha) * 100}%" if rm.F_test_for_significance(alpha) else f"Модель не проходит F-тест на значимость с точностью {(1 - alpha) * 100}%")
     return
+

@@ -39,6 +39,7 @@ class multi_regression:
     def Cov(self):
         if self.cache.Cov is None:
             self.cache.Cov = self.Cor_Var * np.linalg.pinv(np.dot(np.transpose(self.X),self.X))
+            #print("XTX-1 = ", np.linalg.pinv(np.dot(np.transpose(self.X),self.X)))
         return self.cache.Cov
     # нахождение вектора стандартных ошибок
     @property

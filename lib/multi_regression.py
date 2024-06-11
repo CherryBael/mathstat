@@ -84,7 +84,7 @@ class multi_regression:
         return(self.rgc[i] - self.SE[i] * t_quant(self.df, alpha), self.rgc[i] + self.SE[i] * t_quant(self.df, alpha))
     # F тест на значимость
     def F_test_for_significance(self, alpha):
-        F = (self.R**2/(len(self.X[0]) - 1))/((1 - self.R**2)/(self.df))
+        F = (self.R/(len(self.X[0]) - 1))/((1 - self.R)/(self.df))
         #print("------------------------------------------")
         #print(F)
         #print(fcv(len(self.X[0]) - 1, self.df + 1, alpha))
